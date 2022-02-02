@@ -13,12 +13,8 @@ def delete_songs():
 
     try:
         cursor.execute(f"DELETE FROM songs WHERE SongID = {id_field}")
-        print(1)
         conn.commit()
-        print(2)
         print(f"Record {id_field} deleted")
-        print(3)
-        print(3)
 
         time.sleep(3)
         cursor.execute("SELECT * FROM songs")

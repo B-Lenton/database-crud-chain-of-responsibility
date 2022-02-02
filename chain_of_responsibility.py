@@ -13,6 +13,7 @@ from searchSongs import *
 from deleteSongs import *
 from addSongs import *
 from updateSongs import *
+from displayHelp import *
 
 # TODO: Recreate database with new syntax to enable partial text matches https://www.sqlitetutorial.net/sqlite-full-text-search/
 conn = sqlite3.connect(
@@ -58,9 +59,17 @@ class AbstractHandler(Handler):
         return None
 
 # TODO: Add "help" and "request not recognised" handlers & create a domain-specific language for interacting with the program
+class HelpHandler(AbstractHandler):
+    def handle(self, request: Any) -> str:
+        if request == "help":
+            return display_help()
+        else:
+            return super().handle(request)
+
+
 class ReadSongsHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "1":
+        if request == "show songs":
             return read_songs()
         else:
             return super().handle(request)
@@ -68,7 +77,7 @@ class ReadSongsHandler(AbstractHandler):
 
 class AddSongsHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "2":
+        if request == "add song":
             return add_songs()
         else:
             return super().handle(request)
@@ -76,7 +85,7 @@ class AddSongsHandler(AbstractHandler):
 
 class UpdateSongsHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "3":
+        if request == "update":
             return update_songs()
         else:
             return super().handle(request)
@@ -84,7 +93,7 @@ class UpdateSongsHandler(AbstractHandler):
 
 class SearchSongsHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "4":
+        if request == "search":
             return search_songs()
         else:
             return super().handle(request)
@@ -92,7 +101,7 @@ class SearchSongsHandler(AbstractHandler):
 
 class DeleteSongsHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "5":
+        if request == "delete":
             return delete_songs()
         else:
             return super().handle(request)
@@ -100,7 +109,7 @@ class DeleteSongsHandler(AbstractHandler):
 
 class ExitHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
-        if request == "6":
+        if request == "exit":
             print("Exiting")
             sys.exit(0)
         else:
@@ -112,39 +121,40 @@ def client_code(handler: Handler) -> None:
     The client code is usually suited to work with a single handler. In most
     cases, it is not even aware that the handler is part of a chain.
     """
-    choice = ""
-    while choice not in ["1", "2", "3", "4", "5", "6"]:
-        print("\nMenu Options\n1. Print Songs\n2. Add Songs\n3. Update Songs\n4. Search Songs\n5. Delete Songs\n6. Exit")
+    # choice = ""
+    choice = input("Enter your command, or type 'help' for options: ")
 
-        choice = input("Enter your choice: ")
-        if choice not in ["1", "2", "3", "4", "5", "6"]:
-            print("Not in the list of options")
+    # while choice not in ["1", "2", "3", "4", "5", "6"]:
+    #     print("\nMenu Options\n1. Print Songs\n2. Add Songs\n3. Update Songs\n4. Search Songs\n5. Delete Songs\n6. Exit")
 
-    print(f"You have chosen {choice}")
-    handler.handle(choice)
-    # if result:
-    # print(f"{result}", end="")
-    # else:
-    #     print(f"Option {choice} failed.", end="")
+    #     choice = input("Enter your choice: ")
+    #     if choice not in ["1", "2", "3", "4", "5", "6"]:
+    #         print("Not in the list of options")
+
+    print(f"\nYou have chosen {choice}")
+    if choice in ["help", "show songs", "add song", "update", "search", "delete", "exit"]:
+        handler.handle(choice)
+    else:
+        print(f"Command '{choice}' not recognised.", end="")
 
 
 if __name__ == "__main__":
+    help_command = HelpHandler()
     read_song = ReadSongsHandler()
     add_song = AddSongsHandler()
     update_song = UpdateSongsHandler()
     search_song = SearchSongsHandler()
     delete_song = DeleteSongsHandler()
-    exit = ExitHandler()
+    exit_command = ExitHandler()
 
 
     # The client should be able to send a request to any handler, not just the
     # first one in the chain.
     print("Chain: Read > Add > Update...")
     
-    program = True
-    while program is True:
-        read_song.set_next(add_song).set_next(update_song).set_next(search_song).set_next(delete_song).set_next(exit)
-        client_code(read_song)
+    while True:
+        help_command.set_next(read_song).set_next(add_song).set_next(update_song).set_next(search_song).set_next(delete_song).set_next(exit_command)
+        client_code(help_command)
         print("\n")
         # if exit.handle("6"):
         #     print("Goodbye")
