@@ -3,11 +3,11 @@ import sqlite3
 
 def read_songs():
     conn = sqlite3.connect(
-        "/home/ben/Desktop/Just-IT/python/week11/project/c5Music.db"
+        "/home/ben/Desktop/Just-IT/python/week11/project/MusicDB.db"
         )
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM songs")
+    cursor.execute("SELECT * FROM songs;")
     row = cursor.fetchall()
     for record in row:
         print(record)

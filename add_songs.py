@@ -5,29 +5,29 @@ import sqlite3
 # create subroutine to add songs
 def add_songs():
     conn = sqlite3.connect(
-        "/home/ben/Desktop/Just-IT/python/week11/project/c5Music.db"
+        "/home/ben/Desktop/Just-IT/python/week11/project/MusicDB.db"
         )
     cursor = conn.cursor()
     
     # create empty list - song details will be appended
     songs = []
     # songID field is auto-increment
-    songID = cursor.lastrowid
+    # song_id = cursor.lastrowid
 
     title = input("Enter song title: ")
     artist = input("Enter artist name: ")
     genre = input("Enter song genre: ")
 
-    songs.append(songID)
+    # songs.append(song_id)
     songs.append(title)
     songs.append(artist)
     songs.append(genre)
 
     try:
-        cursor.execute("INSERT INTO songs VALUES(?, ?, ?, ?) ", songs)
+        cursor.execute("INSERT INTO songs (Title, Artist, Genre) VALUES(?, ?, ?) ", songs)
         conn.commit()
         print("Song added")
-
+        print("Loading...")
         time.sleep(3)
         cursor.execute("SELECT * FROM songs")
         row = cursor.fetchall()

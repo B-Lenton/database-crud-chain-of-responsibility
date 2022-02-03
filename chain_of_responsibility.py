@@ -8,16 +8,16 @@ from typing import Any, Optional
 import sqlite3
 import sys
 
-from readSongs import *
-from searchSongs import *
-from deleteSongs import *
-from addSongs import *
-from updateSongs import *
-from displayHelp import *
+from read_songs import *
+from search_songs import *
+from delete_songs import *
+from add_songs import *
+from update_songs import *
+from display_help import *
 
-# TODO: Recreate database with new syntax to enable partial text matches https://www.sqlitetutorial.net/sqlite-full-text-search/
+
 conn = sqlite3.connect(
-    "/home/ben/Desktop/Just-IT/python/week11/project/c5Music.db"
+    "/home/ben/Desktop/Just-IT/python/week11/project/MusicDB.db"
     )
 cursor = conn.cursor()
 
@@ -58,7 +58,7 @@ class AbstractHandler(Handler):
 
         return None
 
-# TODO: Add "help" and "request not recognised" handlers & create a domain-specific language for interacting with the program
+
 class HelpHandler(AbstractHandler):
     def handle(self, request: Any) -> str:
         if request == "help":
@@ -121,17 +121,9 @@ def client_code(handler: Handler) -> None:
     The client code is usually suited to work with a single handler. In most
     cases, it is not even aware that the handler is part of a chain.
     """
-    # choice = ""
     choice = input("Enter your command, or type 'help' for options: ")
-
-    # while choice not in ["1", "2", "3", "4", "5", "6"]:
-    #     print("\nMenu Options\n1. Print Songs\n2. Add Songs\n3. Update Songs\n4. Search Songs\n5. Delete Songs\n6. Exit")
-
-    #     choice = input("Enter your choice: ")
-    #     if choice not in ["1", "2", "3", "4", "5", "6"]:
-    #         print("Not in the list of options")
-
     print(f"\nYou have chosen {choice}")
+
     if choice in ["help", "show songs", "add song", "update", "search", "delete", "exit"]:
         handler.handle(choice)
     else:
@@ -148,17 +140,10 @@ if __name__ == "__main__":
     exit_command = ExitHandler()
 
 
-    # The client should be able to send a request to any handler, not just the
-    # first one in the chain.
-    print("Chain: Read > Add > Update...")
+    # The client should be able to send a request to any handler, not just the first one in the chain.
+    print("Chain: Help > Read > Add > Update...")
     
     while True:
         help_command.set_next(read_song).set_next(add_song).set_next(update_song).set_next(search_song).set_next(delete_song).set_next(exit_command)
         client_code(help_command)
         print("\n")
-        # if exit.handle("6"):
-        #     print("Goodbye")
-        #     program = False
-
-    # print("Subchain: Add > Update...")
-    # client_code(add_song)
